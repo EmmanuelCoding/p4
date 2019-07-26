@@ -1,0 +1,1084 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>CS 211 Project 4: Testing and Debugging</title>
+<!-- 2018-04-13 Fri 09:25 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Mark Snyder" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">CS 211 Project 4: Testing and Debugging</h1>
+<meta name="viewport" content="width=device-width, maximum-scale=1, minimum-scale=1" />
+<style type="text/css"> 
+@media screen {
+    html { 
+        font-family: serif; 
+        text-align: justify; 
+    } 
+    .src, .example { 
+      background-color: rgb(245,245,225); /*rgb(225,245,225)*/; 
+    } 
+    pre.src, pre.example { 
+      overflow-x: scroll; 
+    } 
+    /* Merge subtitle area with title area */ 
+    .subtitle { 
+        text-align: center;
+        margin-top: -2em;
+        padding-top: 1em;
+        padding-bottom: 0.1em;
+    }
+    .title, .subtitle { color: white; background-color: #006633; }
+    /* Mason green section borders, left section header style */ 
+    div.outline-2, #table-of-contents { 
+        background-color: rgb(250,250,250);
+        border: 0.75em solid #006633; 
+        border-top: 0em;
+        padding: 0em .5em .5em .5em; /* top right bottom left */
+        margin: 1em 0em 1em 0em; /* top right bottom left */
+    } 
+    div.outline-2 > h2, #table-of-contents > h2 { 
+        background-color: #006633;
+        color: white;
+        font-variant: small-caps; 
+        padding: 0em 0em 0em .5em; /* top right bottom left */
+        margin: 0em -.5em 0em -.75em; /* top right bottom left */
+        text-align: left;
+    }
+    blockquote {
+        font-style: italic;
+    }
+    td, th {
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+    body {
+        background-color: #EEE;
+    }
+    pre {
+    }
+    #content, #preamble, #postamble {
+        margin-left:200px;
+    }
+    .tag {
+      background-color: inherit; font-family: inherit;
+      padding: inherit; font-size: 80%; font-weight: inherit;
+      text-transform: uppercase;
+    }
+    
+    .figure p { text-align: inherit; }
+    figure-number { font-style: italic; }
+    #table-of-contents {
+      text-align: left; 
+      position: fixed;
+      left: 0;
+      margin: 0 auto;
+      padding: 0;
+      width: 200px;
+      top: 0;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    #text-table-of-contents {
+      overflow-y: scroll; 
+      height: 100%;
+    }
+    #text-table-of-contents ul {
+        padding-left: 1em; 
+        margin-left: 0.5em; 
+    }
+    #table-of-contents > h2 { 
+        padding: 0.1em; 
+        margin: 0; 
+    }
+    /* adjustments for small screen, toc at top only */
+    @media (max-width: 570px) { /* landscape for iphone */
+      html {
+         -webkit-text-size-adjust: none;  /* prevent scaling of text on mobile */
+      }
+      body {
+        background-color: #EEE;
+        width:100%;
+        margin:0 auto;
+      }
+      #content, #preamble, #postamble {
+          margin-left:0;
+      }
+      #table-of-contents {
+        position: static;
+        left: inherit;
+        width:inherit;
+        height: auto;
+        border-top: 0em;
+        padding: 0em .5em .5em .5em; /* top right bottom left */
+        margin: 1em 0em 1em 0em; /* top right bottom left */
+        border: 0.75em solid #006633; 
+      }
+    div.outline-2, #table-of-contents { 
+        background-color: rgb(250,250,250);
+        border: 0.75em solid #006633; 
+        border-top: 0em;
+        padding: 0em .5em .5em .5em; /* top right bottom left */
+        margin: 1em 0em 1em 0em; /* top right bottom left */
+    } 
+    div.outline-2 > h2, #table-of-contents > h2 { 
+        background-color: #006633;
+        color: white;
+        font-variant: small-caps; 
+        padding: 0em 0em 0em .5em; /* top right bottom left */
+        margin: 0em -.5em 0em -.75em; /* top right bottom left */
+        text-align: left;
+    }
+      #text-table-of-contents {
+        overflow-y: visible; 
+        height: inherit;
+      }
+      #text-table-of-contents ul {
+          padding-left: 1em; 
+          margin-left: 0.5em; 
+      }
+    }
+    .linenr { font-size: xx-small; }
+}
+
+@media print {
+    html {
+        font-family: serif; 
+        font-size: 10pt;
+        text-align: justify; 
+        .linenr { font-size: xx-small; }
+    }
+}
+</style>
+<ul class="org-ul">
+<li><b>Due: Saturday, July 27th at 11:59pm (no late submissions)</b>
+</li>
+<li>Submit to  <a href="https://mymasonportal.gmu.edu/"><b>Blackboard</b></a>
+</li>
+</ul>
+
+<p>
+<b>CODE DISTRIBUTION</b>
+</p>
+<ul class="org-ul">
+<li>Project Files: p4.zip (on Piazza)
+</li>
+<li><a href="p4docs/index.html">Javadocs</a> for Problem 1: Testing
+</li>
+</ul>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">Testing and Debugging</a>
+<ul>
+<li><a href="#sec-1-1">Project Overview</a></li>
+<li><a href="#sec-1-2">Honor Code for this Project</a></li>
+<li><a href="#sec-1-3">Project Files</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">Problem 1: Test Mode Activated</a>
+<ul>
+<li><a href="#sec-2-1">Running Your Tests</a></li>
+<li><a href="#sec-2-2">Scripts to run tests</a></li>
+<li><a href="#sec-2-3">Goals for the Testing Problem</a></li>
+<li><a href="#sec-2-4">(40%) Grading Criteria for the Testing Problem</a></li>
+<li><a href="#sec-2-5">Demo of Dict</a></li>
+<li><a href="#sec-2-6">Demo of Payroll</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">Problem 2: DebugMe!</a>
+<ul>
+<li><a href="#sec-3-1">A Programming Puzzle</a></li>
+<li><a href="#sec-3-2">Command Line Arguments</a></li>
+<li><a href="#sec-3-3">Running <code>DebugMe</code> through the Debugger</a></li>
+<li><a href="#sec-3-4">(60%) Grading Criteria for Problem 2: Debugging</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">Project Submission</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">Testing and Debugging</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">Project Overview</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+This project will be quite different from our previous
+projects. Rather than writing production code, you will instead be
+writing tests in one part and using the debugger in the other. The purpose of this projec t is to give you practice with useful tools that will help you after CS211. The
+project is much smaller than P3, so there should be enough time betwene now and the end of the semester to complete it.  There are two main portions:
+</p>
+</div>
+
+<div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1">Problem 1: Testing</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+The first part of the project focuses on developing the ability to
+write test cases for an existing class.
+</p>
+
+<p>
+In the project pack, a directory called <code>testme</code> contains multiple
+implementations of a simple system to calculate various salary-related
+things.  One of these implementations is correct, while the remaining
+ones all contain bugs.  You will write test cases based on the
+provided class documentation to discern which implementation is
+correct.  The correct implementation should pass all tests while the
+buggy versions should all fail at least one test, likely many more.
+You will earn credit for each wrong implementation that fails tests
+(when the correct one is still passing tests!), and for correctly
+identifying the correct version.
+</p>
+
+<p>
+Importantly, <i>you do not have access to the source code</i> for any of
+the implementations. Instead, you must rely on the documentation of
+the intended purpose of the classes to develop your tests.
+</p>
+
+<p>
+Each implementation is in its own package and subdirectory.  Later
+sections describe how to run your single testing file against any
+particular implementation without copying files around. (hint: opening
+and closing files repeatedly in DrJava is <b>not</b> a good workflow).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2">Problem 2: Debugging</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+The second part of the project involves developing your skills to
+trace code and utilize the debugger to follow execution.
+</p>
+
+<p>
+The <code>debugme</code> directory of the project pack contains <code>DebugMe.java</code>, a
+sneaky program which requires a <b>lot</b> of command line arguments to be
+passed into it to run to completion.  The first argument will always
+be your GMU <code>netID</code> (e.g. <code>gmason76</code>) which will uniquely use the
+arguments for you in ways different from other students.
+</p>
+
+<p>
+<code>DebugMe.java</code> is divided into a series of phases with each requiring
+different command line input to complete. Your task is to use the
+debugger, reverse-engineer what is happening in each phase-method, and
+determine what command-line arguments are necessary in order to
+satisfy the phase. When missing or improper inputs are detected in a
+phase, the program throws exceptions and escapes back to attempt the
+next phase. You will earn points for each phase that you successfully
+"defuse".
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">Honor Code for this Project</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Honor code policies are in effect for this project as always, but it
+bears considering how it relates to specific nature of the tasks. Keep
+the following in mind as you work.
+</p>
+<ul class="org-ul">
+<li>You are not allowed to collaborate on projects. They should reflect
+your own efforts.
+</li>
+<li>For the Problem 1: Testing, you may not share the test cases you make
+with other students.
+</li>
+<li>It is forbidden to discuss whether an implementation is buggy or
+proper for the Testing problem.
+</li>
+<li>You <b>can</b> discuss syntax of what test cases look like and high-level
+strategies for what to test (ex: <i>The docs says the class is supposed to
+do this so I'm writing a test that checks that case</i>).
+</li>
+<li>It is forbidden to directly discuss the "secret" to passing a
+particular phase of the Problem 2: Debugging.
+</li>
+<li>You <b>can</b> discuss how to use the debugger in public forums and
+strategies of where to set breakpoints to speed debugging along
+</li>
+<li>When in doubt, start a piazza post as private, and we can change it
+to public after the fact as needed.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3">Project Files</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Here is the directory structure in p4pack/
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-text">p4pack/
+|
++--ANSWERS.txt : Describe written answers to problems in this file
+|
++--debugme/
+|  |
+|  +--DebugMe.java
+|
++--testme/
+   |
+   +--docs/               (javadoc output for an implementation)
+   |  |
+   |  +--index.html
+   |  +--...
+   |
+   +--PayrollTest.java  (write more tests here)
+   |
+   +--junit-4.12.jar
+   |
+   +--imp1/
+   |  |
+   |  +--payroll
+   |     |
+   |     +--Dict.class
+   |     |
+   |     +--Payroll.class
+   | 
+   +--imp2/
+   |  |
+   |  +--payroll
+   |     |
+   |     +--Dict.class
+   |     |
+   |     +--Payroll.class
+   | 
+   +--remaining impN/ directories: same structure as imp1/ and imp2/ above
+   |
+   ...
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Problem 1: Test Mode Activated</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+The first task is to add many <code>@Test</code>-annotated methods to
+<code>PayrollTest.java</code> and determine which of the many implementations are
+bad, and which one is good. Then describe your results in
+<code>ANSWERS.txt</code>.
+</p>
+
+<p>
+The code we're testing out tries to calculate various salary-related
+things based on employees and their (yearly) salaries. The implementor
+got a bit carried away and made a very generic <code>Dict&lt;K,V&gt;</code> class to
+track the (key,value) pairings representing (employee-name,
+yearly-salary), as part of the calculation.
+</p>
+
+<p>
+We linked the <code>Javadoc</code> documentation to this part of the project at
+the top of this specification. A copy is also included in
+<code>p4pack/testme/docs</code>. You could locally open up the
+<code>p4pack/testme/docs/index.html</code> file without being online.
+</p>
+
+<p>
+We're only supplying the <code>.class</code> files for each implementation; you
+don't get to look for the bugs directly, you have to just think about
+what the purpose of the code is, and then write test cases based on
+that purpose. (You're writing "black box" test cases).
+</p>
+</div>
+
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">Running Your Tests</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Note that running one test file against many implementations can be
+tedious if we're not smart about it.  A typical (but bad) novice
+approach is to make many copies of the file which will quickly get out
+of sync as changes are made to one and the copies are not updated.
+</p>
+
+<p>
+Instead, utilize the ability of the compiler and runtime of java to
+set a <i>class path</i> on the command line to cause a search for classes
+in the specified locations.  Navigate to the <code>testme/</code> directory and
+run commands like the following which runs tests on implementation 1
+only:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">demo$ javac -cp .:imp1/:junit-4.12.jar *.java
+demo$ java  -cp .:imp1/:junit-4.12.jar PayrollTest
+</pre>
+</div>
+
+<p>
+These commands tell Java that it should first compile all <code>.java</code>
+files it finds when looking in the current directory (<code>.</code>), in the
+<code>imp1/</code> directory, and it should also look through the
+<code>junit-4.12.jar</code> file while compiling; then, it again needs access to
+code in all three of those locations, but it should run the <code>main</code>
+method of <code>PayrollTest</code>.
+</p>
+
+<p>
+If you want to run tests on a different implementation, just change
+the <code>imp1</code> to a different directory, as in
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">demo$ javac -cp .:imp2/:junit-4.12.jar *.java
+demo$ java  -cp .:imp2/:junit-4.12.jar PayrollTest
+</pre>
+</div>
+
+<p>
+For this task, the command line is likely superior to most IDEs. For
+instance, these commands will not work in DrJava. It's likely that
+most IDEs will struggle with this task.  Take this as an opportunity
+to beef up your command line skills. It offers the ultimate
+flexibility and the only price to unlock that is a little practice (on
+the order of cut-pasting some ready-made commands).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">Scripts to run tests</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+To ease the task of testing on the command line, two scripts are
+provided which will compile and run all implementations.
+</p>
+
+<p>
+<b>On Unix/Mac OS X</b> use the <code>unix-compile-test.sh</code> script in a
+ terminal.
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">&gt; cd testme
+&gt; unix-compile-test.sh
+</pre>
+</div>
+
+<p>
+Results of testing all implementations are summarized by only showing
+how many tests failed (or that it was OK!). If you need to understand
+why a particualr implementation is behaving some way, then don't use
+the script here, use the just-one-implementation commands shown above!
+</p>
+
+<p>
+<b>On Windows</b> use the <code>windows-compile-test.cmd</code> script in the
+<code>cmd.exe</code> terminal. 
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">&gt; cd testme
+&gt; windows-compile-test.cmd
+</pre>
+</div>
+<p>
+Results will be left in the <code>results.txt</code> text file due to the lack of
+a good <a href="https://en.wikipedia.org/wiki/Grep">grep</a> on the Windows platform.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">Goals for the Testing Problem</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+Multiple implementations of the <code>payroll</code> package are provided.  One
+of these is correct while the remainder are crap. It is known that
+implementations <code>imp2</code>, <code>imp8</code>, and <code>imp11</code> are broken.
+</p>
+
+<p>
+To complete this project, do the following:
+</p>
+<ul class="org-ul">
+<li>Create enough tests that all implementations but one are failing at
+least one test.
+</li>
+<li>Write tests for both the <code>Dict</code> and <code>Payroll</code> classes.  Problems may
+exist in one, the other, or both.
+</li>
+<li>Document your test cases to indicate what they are testing.  Part of
+your grade will be assigned based on the documentation of test cases.
+</li>
+<li>Submit your <code>PayrollTest.java</code> file which we will run against all
+implementations.
+</li>
+<li><b>Identify the general flaws</b> in the behavior of each of the known
+broken implementations.  Describe these flaws in a few sentences in
+the provided <code>ANSWERS.txt</code> file which will be submitted with your
+code.
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4">(40%) Grading Criteria for the Testing Problem&#xa0;&#xa0;&#xa0;<span class="tag"><span class="grading">grading</span></span></h3>
+<div class="outline-text-3" id="text-2-4">
+<ul class="org-ul">
+<li>10% : Identify the correct implementation and report it in
+<code>ANSWERS.txt</code>. This implementation must pass all of your test cases
+to get the full 10% credit here. Narrowing to limited candidates
+gets partial credit. (e.g., if you're not sure which of 2-3
+remaining implementations is the correct one, but it is still in
+those remaining ones, you'll get a bit of credit).
+</li>
+<li>12% : Each faulty implementation fails at least one test in your
+<code>P5Tests</code> (1% per implementation). Points might not be earned if all
+implementations (including the correct one) fail at least one test!
+That would mean you have bogus tests that definitely aren't correct,
+themselves.
+</li>
+<li>9% : <code>PayrollTest</code> documents the intent of each test case using
+clear comments.
+</li>
+<li>9% (3% each) : Flaws in the known broken implementations are
+adequately described in <code>ANSWERS.txt</code> .
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-2-5" class="outline-3">
+<h3 id="sec-2-5">Demo of Dict</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+The <code>Dict</code> class provides a quite simple dictionary
+implementation. Below is a demonstration of creating one and calling
+some of its methods.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java">&gt; import payroll.*;
+&gt; Dict&lt;String,Integer&gt; d = new Dict&lt;String,Integer&gt;();
+&gt; d.put("one",1);
+&gt; d
+{(one:1)}
+&gt; d.size()
+1
+&gt; d.put("two",2);
+&gt; d.put("three",3);
+&gt; d.size()
+3
+&gt; d.get("one")
+1
+&gt; d.get("350")
+java.util.NoSuchElementException: "350" key not in dict.
+	at payroll.Dict.complainNoKey(Dict.java:147)
+	at payroll.Dict.get(Dict.java:70)
+&gt; d.pop("two")
+2
+&gt; d.toString()
+"{(one:1),(three:3)}"
+&gt; d.keys()
+[one, three]
+&gt; d.clear()
+&gt; d
+{}
+&gt;
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-6" class="outline-3">
+<h3 id="sec-2-6">Demo of Payroll</h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+The <code>Payroll</code> class uses the <code>Dict</code> class in its implementation of
+some salary-related calculations. Below is a demonstration of some
+basic uses of <code>Payroll</code>.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java">&gt; import payroll.*;
+&gt; Payroll p = new Payroll()
+&gt; p.hire("A",120);
+&gt; p.hire("A",120)
+&gt; p.hire("B",240)
+&gt; p.employees()
+[A, B]
+&gt; p.topSalary()
+240
+&gt; p.hire("C",1500)
+&gt; p.topSalary()
+1500
+&gt; p.fire("C")
+true
+&gt; p.employees()
+[A, B]
+&gt; p.fire("C")
+false
+&gt; p.giveRaise("A",0.5)
+&gt; p.getSalary("A")
+180
+&gt; p.giveRaise(1.0) // everyone gets 100% raise!
+&gt; p.getSalary("A")
+360
+&gt; p.getSalary("B")
+480
+&gt; p.monthlyExpense() // for one month of twelve.
+70
+&gt;
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Problem 2: DebugMe!</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">A Programming Puzzle</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+The file <code>debugme/DebugMe.java</code> is provided in the code pack and
+contains a puzzle.  The <code>main()</code> method in this program accepts a
+series of command line arguments that, when correctly specified, will
+cause the program to run to completion.  If the command line arguments
+are not specified correctly, the program will fail prematurely.  The
+purpose of this problem is to determine the correct inputs to cause
+the program to run to completion.
+</p>
+
+<p>
+<code>DebugMe</code> is arranged in "stages" and passing stages earns
+points. After each run the program prints the points earned based on
+the stages "passed". Example:
+</p>
+<div class="org-src-container">
+
+<pre class="src src-bash">&gt; java DebugMe mpneary 0 0 0
+Let the games... BEGIN!
+Phase One, let's have some fun!
+
+	Double debugger burger, order up!
+
+oops! Game Over... &gt;:( 
+
+  * Score: 0/55 pts *
+</pre>
+</div>
+<p>
+Notice that <b>the first argument is always your NetID</b>. Don't use
+<code>mpneary</code> unless you are Prof. Neary.  <code>DebugMe</code> uses your NetID
+to create a unique set of conditions which you must pass so that your
+experience with the program will likely be different from other
+students.
+</p>
+
+<p>
+This task is actually kinder to you - if you fail one phase, you are
+able to continue to the next.
+</p>
+
+
+<p>
+The stages in <code>DebugMe</code> are intentionally obscure. This is code that
+is meant to be a puzzle rather than easily readable and to that end,
+<b>you are strongly encouraged to use a debugger</b> while analyzing the
+program.  Debuggers allow you to stop execution at any point and
+examine variables, step forward line by line, and ultimately identify
+which kinds of command line arguments will make it through a stage and
+which will cause the dreaded <code>failure()</code> method to be invoked ending
+the run.  A primary goal of this problem is to gain experience with
+debuggers as they are incredibly useful tool for a programmer to have
+in their utility belt.  Credit for the problem is entirely based on
+how many stages are passed.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">Command Line Arguments</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+The only artifact of your efforts will be the specific command-line
+invocation of the program, as your only inputs are given as
+command-line arguments.
+</p>
+
+<ul class="org-ul">
+<li>the first command-line argument must be your GMU <i>netID</i>,
+e.g. <code>gmason76</code>. Many of the phases will use this to randomize and
+personalize the code for you - you've got your very own unique
+project! 
+</li>
+<li>each phase (method) will read the next few arguments (however many
+it needs), and use them in more and more quirky ways.
+</li>
+<li>towards the end of each phase, there will be some check and a
+guarded call to <code>failure()</code>. Your goal is to figure out what
+command-line arguments will cause these failures to never happen.
+</li>
+<li>if you need to include spaces in a single argument, <b>please use
+double-quotes.</b>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">Running <code>DebugMe</code> through the Debugger</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+How can we use the debugger with command-line arguments? It's
+surprisingly easy in DrJava:
+</p>
+
+<ul class="org-ul">
+<li>Compile <code>DebugMe.java</code>
+</li>
+<li>Set a breakpoint in the phase you're working on
+</li>
+<li>Turn on debugging mode under the debugging menu
+</li>
+<li>In the Interactions Pane, run a command like this to launch
+<code>DebugMe</code> with command line arguments.
+</li>
+</ul>
+<div class="org-src-container">
+
+<pre class="src src-bash">&gt; java DebugMe mpneary 0 0 0
+Let the games... BEGIN!
+Phase One, let's have some fun!
+oops! Game Over... &gt;:( 
+
+	error msg: Failure! Double debugger burger, order up!
+
+  * Score: 0/55 pts.
+</pre>
+</div>
+<p>
+If you've turned on debugging, though, you get to step through and
+see what's happening.
+</p>
+<ul class="org-ul">
+<li>Most IDEs have a means of running a program through a
+debugger. Learn about your tool if you are not using DrJava.
+</li>
+<ul>
+  <li><a href="https://www.youtube.com/watch?v=0ifDl5iN6NU">Debugging in IntelliJ</a></li>
+  <li><a href="https://www.youtube.com/watch?v=9gAjIQc4bPU">Debugging in Eclipse</a></li>
+</ul>
+<li>For the brave, there is also a command line debugger, command <code>jdb</code>
+which should be installed with every JDK.  This is somewhat less
+convenient as it provides only limited source code display but can
+work with some classic unix tools.
+</li>
+</ul>
+
+<p>
+Regardless of how you access the debugger, you will want to
+familiarize yourself with features such setting breakpoints to stop
+the running program, stepping forward line by line, and displaying the
+values of variables.
+</p>
+
+<p>
+<code>DebugMe</code> is not a "real" program as it is intentionally obscure.
+However, as an exercise to learn how to analyze running programs it
+will provide invaluable experience.  Happy bug squashing.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4">(60%) Grading Criteria for Problem 2: Debugging&#xa0;&#xa0;&#xa0;<span class="tag"><span class="grading">grading</span></span></h3>
+<div class="outline-text-3" id="text-3-4">
+<ul class="org-ul">
+<li>55% : In <code>ANSWERS.txt</code>, report your command line after passing as
+many phases as possible. Paste the entire thing in, including <code>java yourNetID</code>.  
+To complete all phases, a total of 29 command line args
+including <code>NetID</code> are required.
+</li>
+<li>5% : In <code>ANSWERS.txt</code> describe your experience using the
+debugger. What helped, what frustrated, and what lessons will you
+take forward? Limit your description to one to two paragraphs.
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Project Submission</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Submit the following files zipped in your project directory. It's
+surprisingly few files, given all that we worked with!
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">File name:</th>
+<th scope="col" class="left">Description:</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left"><code>ID.txt</code></td>
+<td class="left">Same contents as usual</td>
+</tr>
+
+<tr>
+<td class="left"><code>PayrollTest.java</code></td>
+<td class="left">Tests for Problem 1</td>
+</tr>
+
+<tr>
+<td class="left"><code>ANSWERS.txt</code></td>
+<td class="left">Answers for Problems 1 and 2</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Do not submit all of the <code>imp1,imp2,imp3..</code> directories, nor the
+documentation directory. We will use a fresh copy, so modifying them
+to bend to your needs will backfire!
+</p>
+
+<p>
+As in previous projects:
+</p>
+<ul class="org-ul">
+<li>Use a project folder named like <code>LabNum_userID_P4</code> with your own
+NetID and lab number substituted.
+</li>
+<li>Include just the three files named above.
+</li>
+<li>Zip the project folder and submit it to blackboard by the deadline.
+</li>
+</ul>
+
+<p>
+Make sure to answer the required questions in <code>ANSWERS.txt</code>. This file
+is provided as part of the project pack. It is also printed below.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-text">PROBLEM 1: TESTING
+==================
+
+(10%) The correct implementation is: (fill in your answer below)
+
+imp #:
+
+
+--------------------------------------------------------------------------------
+
+KNOWN FAULTY IMPLEMENTATIONS (2, 8, 11)
+----------------------------
+
+(3%) Describe the general problems with imp2
+
+
+
+(3%) Describe the general problems with imp8
+
+
+
+(3%) Describe the general problems with imp11
+
+
+
+--------------------------------------------------------------------------------
+
+PROBLEM 2: DEBUGGING
+====================
+
+--------------------------------------------------------------------------------
+(55%) Include the command line you found to pass as many phases as
+possible. Include your NetID at the beginning.  To complete all
+phases, a total of 29 command line args including NetID are required.
+
+java DebugMe netID 
+
+
+--------------------------------------------------------------------------------
+(5%) Describe your experience using the debugger. What helped, what
+frustrated, and what lessons will you take forward? Limit your
+description to one to two paragraphs please.
+
+
+
+
+
+--------------------------------------------------------------------------------
+</pre>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

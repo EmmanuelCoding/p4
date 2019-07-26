@@ -1,0 +1,48 @@
+PROBLEM 1: TESTING
+==================
+
+(10%) The correct implementation is: (fill in your answer below)
+
+imp #:
+
+
+--------------------------------------------------------------------------------
+
+KNOWN FAULTY IMPLEMENTATIONS (2, 8, 11)
+----------------------------
+
+(3%) Describe the general problems with imp2
+
+
+
+(3%) Describe the general problems with imp8
+
+
+
+(3%) Describe the general problems with imp11
+
+
+
+--------------------------------------------------------------------------------
+
+PROBLEM 2: DEBUGGING
+====================
+
+--------------------------------------------------------------------------------
+(55%) Include the command line you found to pass as many phases as
+possible. Include your NetID at the beginning.  To complete all
+phases, a total of 29 command line args including NetID are required.
+
+java DebugMe netID 
+
+
+--------------------------------------------------------------------------------
+(5%) Describe your experience using the debugger. What helped, what
+frustrated, and what lessons will you take forward? Limit your
+description to one to two paragraphs please.
+
+
+
+
+
+--------------------------------------------------------------------------------
