@@ -18,20 +18,14 @@ public class PayrollTest {
 
   // BEGIN TESTS HERE.
 
-  // Eliminate this test after you get the hang of things
-  @Test public void example(){
-    assertEquals(5,5);
-    assertFalse(5==6);
-    assertTrue(6==6);
-  }
   //DICT TESTS/////////////////////////////////////////////////////////////////
-  //Constructor tests
+  //Constructor tests////
   @Test public void createDict(){
     Dict<String,Integer> d = new Dict<String,Integer>();
     assertEquals(0,d.size());
   }
-  //put() tests
-  @Test public void put(){
+  //put() tests////
+  @Test public void testPut(){
     Dict<String,Integer> d = new Dict<String,Integer>();
     try {
       d.put("key1",0);
@@ -39,12 +33,18 @@ public class PayrollTest {
       assertEquals((Integer)0,(Integer)d.get("key1"));
       assertEquals((Integer)1,(Integer)d.get("key2"));
       d.put("key2",2);
+      assertEquals((Integer)2,(Integer)d.get("key2"));
       assertEquals((Integer)2,(Integer)d.size());
-      //d.put(null, 5);
     }catch(UnsupportedOperationException u){System.out.print("nosuch test");
-      }
+    }
   }
-  //size() tests
+    //test exceptions
+  @Test (expected = UnsupportedOperationException.class)
+  public void testPut_unSup(){
+    Dict<String,Integer> d = new Dict<String,Integer>();
+    d.put(null, 5);
+  }
+  //size() tests////
   @Test public void testSize(){
     Dict<String,Integer> d = new Dict<String,Integer>();
     assertEquals(0,d.size());
@@ -52,25 +52,37 @@ public class PayrollTest {
     assertEquals(1,d.size());
     assertNotEquals(2,d.size());
   }
-  //has() tests
+  //has() tests////
   @Test public void testHas(){
     Dict<String,Integer> d = new Dict<String,Integer>();
     d.put("key1",1);
     assertTrue(d.has("key1"));
     assertFalse(d.has("key2"));
   }
-  //get() tests
+  //get() tests////
   @Test public void testGet(){
     Dict<String,Integer> d = new Dict<String,Integer>();
     try{
       d.put("key1",1);
       assertEquals((Integer)1,(Integer)d.get("key1"));
       //test exception
-      //d.get("key2");
+      //
     }catch (NoSuchElementException no){System.out.print("nosuch test");
     }
   }
-  //pop() tests
+  @Test (expected = NoSuchElementException.class)
+  public void testGet_noSuch_null(){
+    Dict<String,Integer> d = new Dict<String,Integer>();
+    d.put("key1",1);
+    d.get("null");
+  }
+  @Test (expected = NoSuchElementException.class)
+  public void testGet_noSuch_norm() {
+    Dict<String, Integer> d = new Dict<String, Integer>();
+    d.put("key1", 1);
+    d.get("key2");
+  }
+  //pop() tests////
   @Test public void testPop(){
     Dict<String,Integer> d = new Dict<String,Integer>();
     try{
@@ -79,13 +91,26 @@ public class PayrollTest {
       assertEquals(2,d.size());
       d.pop("key1");
       assertEquals(1,d.size());
-      //test exceptions
-      //d.pop("key1");
-      //d.pop(null);
+
     }catch (NoSuchElementException no){System.out.print("nosuch test");
     }
     catch (NullPointerException nu){System.out.print("null test");
     }
+  }
+  //test exceptions
+  @Test (expected = NoSuchElementException.class)
+  public void testPop_noSuch(){
+    Dict<String,Integer> d = new Dict<String,Integer>();
+      d.put("key1",1);
+      d.put("key2",2);
+      d.pop("key3");
+  }
+  @Test (expected = NullPointerException.class)
+  public void testPop_null(){
+    Dict<String,Integer> d = new Dict<String,Integer>();
+      d.put("key1",1);
+      d.put("key2",2);
+      d.pop(null);
   }
   //keys() tests
   @Test public void testKeys(){
@@ -116,6 +141,7 @@ public class PayrollTest {
     d.put("key3",3);
     assertEquals("{(key1:1),(key2:2),(key3:3)}",d.toString());
   }
+
   //PAYROLL TESTS//////////////////////////////////////////////////////////////
   //Constructor tests
   @Test public void createPayroll(){
@@ -255,6 +281,6 @@ public class PayrollTest {
   }
 }
 /*possible:
-    3,4,9,10,12,13
+    3,4,9,10,12
 
  */
