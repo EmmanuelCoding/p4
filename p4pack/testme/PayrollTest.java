@@ -183,22 +183,38 @@ public class PayrollTest {
       d.put("key3",3);
       Payroll pp = new Payroll(d);
       assertEquals((Integer)2,(Integer)pp.getSalary("key2"));
-      //pp.getSalary(null);
-      //pp.getSalary("key4");
     }catch (NullPointerException nu){System.out.print("null test");
     }catch (NoSuchElementException no){System.out.print("such test");
     }
   }
+  @Test (expected = NullPointerException.class)
+  public void testGetSalary_null(){
+    Dict<String,Integer> d = new Dict<String,Integer>();
+    d.put("key1",1);
+    d.put("key2",2);
+    d.put("key3",3);
+    Payroll pp = new Payroll(d);
+    pp.getSalary(null);
+  }
+  @Test (expected = NoSuchElementException.class)
+  public void testGetSalary_noSuch(){
+    Dict<String,Integer> d = new Dict<String,Integer>();
+    d.put("key1",1);
+    d.put("key2",2);
+    d.put("key3",3);
+    Payroll pp = new Payroll(d);
+    pp.getSalary("key4");
+  }
   //topSalary() tests
   @Test public void testTopSalary(){
-      Dict<String,Integer> d = new Dict<String,Integer>();
-      d.put("key1",1);
-      d.put("key2",2);
-      d.put("key3",3);
-      Payroll pp = new Payroll(d);
-      assertEquals((Integer)3,(Integer)pp.topSalary());
-      pp.hire("key4",4);
-      assertEquals((Integer)4,(Integer)pp.topSalary());
+    Dict<String,Integer> d = new Dict<String,Integer>();
+    d.put("key1",1);
+    d.put("key2",2);
+    d.put("key3",3);
+    Payroll pp = new Payroll(d);
+    assertEquals((Integer)3,(Integer)pp.topSalary());
+    pp.hire("key4",4);
+    assertEquals((Integer)4,(Integer)pp.topSalary());
   }
   //hire() tests
   @Test public void testHire(){
@@ -211,11 +227,27 @@ public class PayrollTest {
         pp.hire("key4",4);
         pp.hire("key4",0);
         assertEquals((Integer)4,(Integer)pp.employees().size());
-        //pp.hire("key5",-12);
-        //pp.hire(null,10);
     }catch (NullPointerException nu){System.out.print("null test");
     }catch (RuntimeException ru){System.out.print("run test");
     }
+  }
+  @Test (expected = NullPointerException.class)
+  public void testHire_null() {
+    Dict<String, Integer> d = new Dict<String, Integer>();
+    d.put("key1", 1);
+    d.put("key2", 2);
+    d.put("key3", 3);
+    Payroll pp = new Payroll(d);
+    pp.hire(null,10);
+  }
+  @Test (expected = RuntimeException.class)
+  public void testHire_run() {
+    Dict<String, Integer> d = new Dict<String, Integer>();
+    d.put("key1", 1);
+    d.put("key2", 2);
+    d.put("key3", 3);
+    Payroll pp = new Payroll(d);
+    pp.hire("key5",-9);
   }
   //fire() tests
   @Test public void testFire(){
@@ -255,9 +287,17 @@ public class PayrollTest {
         assertEquals(2,pp.getSalary("key1"));
         assertEquals(3,pp.getSalary("key2"));
         assertEquals(4,pp.getSalary("key3"));
-        //pp.giveRaise(-0.05);
     }catch (RuntimeException ru){System.out.print("run test");
     }
+  }
+  @Test (expected = RuntimeException.class)
+  public void test_everyoneGiveRaise_run() {
+    Dict<String, Integer> d = new Dict<String, Integer>();
+    d.put("key1", 1);
+    d.put("key2", 2);
+    d.put("key3", 3);
+    Payroll pp = new Payroll(d);
+    pp.giveRaise(-0.05);
   }
   //give to ONLY ONE
   @Test public void test_onlyONE_GiveRaise(){
@@ -271,16 +311,40 @@ public class PayrollTest {
         assertEquals(3,pp.getSalary("key2"));
         assertEquals(1,pp.getSalary("key1"));
         assertEquals(3,pp.getSalary("key3"));
-        //pp.giveRaise(null,0.2);
-        //pp.giveRaise("key4",0.2);
-        //pp.giveRaise("key2",-0.2);
     }catch (NullPointerException nu){System.out.print("null test");
     }catch (NoSuchElementException no){System.out.print("nosuch test");
     }catch (RuntimeException ru){System.out.print("run test");
     }
   }
+  @Test (expected = RuntimeException.class)
+  public void test_onlyONEGiveRaise_run() {
+    Dict<String, Integer> d = new Dict<String, Integer>();
+    d.put("key1", 1);
+    d.put("key2", 2);
+    d.put("key3", 3);
+    Payroll pp = new Payroll(d);
+    pp.giveRaise("key2",-0.2);
+  }
+  @Test (expected = NullPointerException.class)
+  public void test_onlyONEGiveRaise_null() {
+    Dict<String, Integer> d = new Dict<String, Integer>();
+    d.put("key1", 1);
+    d.put("key2", 2);
+    d.put("key3", 3);
+    Payroll pp = new Payroll(d);
+    pp.giveRaise(null,0.2);
+  }
+  @Test (expected = NoSuchElementException.class)
+  public void test_onlyONEGiveRaise_noSuch() {
+    Dict<String, Integer> d = new Dict<String, Integer>();
+    d.put("key1", 1);
+    d.put("key2", 2);
+    d.put("key3", 3);
+    Payroll pp = new Payroll(d);
+    pp.giveRaise("key4",0.2);
+  }
 }
 /*possible:
-    3,4,9,10,12
+    3,9,10,12
 
  */
